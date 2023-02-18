@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 
+
+
 ReactDOM.render(
-    <App />,
+    <App posts={posts} dialogs={dialogs} messages={messages}/>,
   document.getElementById('root')
 );

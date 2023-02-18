@@ -1,13 +1,14 @@
 import React from "react";
 import s from './ProfileContentCSS.module.css'
 import MyPosts from "./MyPosts/MyPosts";
-import ProfileInfo from "./MyPosts/ProfileInfo";
+import ProfileInfo from "./ProfileInfo/ProfileInfo";
 
-const ProfileContent = () => {
+const ProfileContent = (props: any) => {
+
     return (
         <div>
             <ProfileInfo/>
-            <MyPosts/>
+            <MyPosts posts={props.posts}/>
         </div>
 
     )

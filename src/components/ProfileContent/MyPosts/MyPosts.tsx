@@ -3,13 +3,21 @@ import s from './MyPosts.module.css'
 import Post from "./Post/Post";
 import {message} from "antd";
 
-const MyPosts = (props: any) => {
 
-    let postsData = [
-        {id: 1, message: 'Hi, how are u?', likesCount: 15},
-        {id: 2, message: "It's my first post", likesCount: 20},
+type PostType = {
+    id: number
+    message: string
+    likesCount: number
 
-    ]
+}
+
+type MyPostPropsType = {
+    posts: PostType[]
+}
+const MyPosts = (props: MyPostPropsType) => {
+
+
+    let postsElements = props.posts.map((p) => <Post message={p.message} likesCount={p.likesCount}/>)
 
     return (
         <div className={s.postBlock}>
@@ -23,9 +31,7 @@ const MyPosts = (props: any) => {
                 </div>
             </div>
             <div className={s.posts}>
-                <Post message={postsData[0].message} likesCount={postsData[0].likesCount}/>
-                <Post message={postsData[1].message} likesCount={postsData[1].likesCount}/>
-
+                {postsElements}
             </div>
         </div>
     )
