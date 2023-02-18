@@ -12,19 +12,23 @@ type DialogsType = {
     name: string
 }
 
-type DialogsPropsType = {
+type StateType = {
     messages: MessageType[]
     dialogs: DialogsType[]
+
 }
 
+type DialogsPropsType = {
+    state: StateType
+}
 
 const Dialogs = (props: DialogsPropsType) => {
 
-    let dialogsElements = props.dialogs
+    let dialogsElements = props.state.dialogs
         .map(d => <DialogItem name={d.name} id={d.id}/>)
 
 
-    let messagesElements = props.messages
+    let messagesElements = props.state.messages
         .map(m => <Message message={m.message}/>)
 
     return (
