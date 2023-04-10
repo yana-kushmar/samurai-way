@@ -16,14 +16,13 @@ type DialogsType = {
 type StateType = {
     messages: MessageType[]
     dialogs: DialogsType[]
+    newMessageBody: string
 
 }
 
 type DialogsPropsType = {
-    state?: StateType
-    store:typeof store
-    // updateNewMessageBody: () => void
-    dialogsPage: any
+    dialogsPage: StateType
+ 
     sendMessage: () => void
     updateNewMessageBody: (body: any) => void
 
@@ -47,7 +46,7 @@ const Dialogs = (props: DialogsPropsType) => {
 
     }
     let onNewMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-       let body = e.currentTarget.value
+        let body = e.currentTarget.value
         props.updateNewMessageBody(body)
 
     }

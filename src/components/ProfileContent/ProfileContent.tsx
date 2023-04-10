@@ -3,8 +3,13 @@ import React from "react";
 
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import MyPostsContainer from "./MyPosts/MyPostsContainer";
+import store from "../../Redux/redux-store";
 
-const ProfileContent = (props: any) => {
+type ProfileContentPropsType = {
+    store: typeof store
+}
+
+const ProfileContent = (props: ProfileContentPropsType) => {
 
     return (
         <div>

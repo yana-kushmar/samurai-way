@@ -1,26 +1,15 @@
- import React, {ChangeEvent} from "react";
+ import React from "react";
 
-import store, {sendMessageCreator, updateNewMessageBodyCreator} from "../../Redux/DialogsReducer";
+import  {sendMessageCreator, updateNewMessageBodyCreator} from "../../Redux/DialogsReducer";
+ import store from "../../Redux/redux-store";
  import Dialogs from "./Dialogs";
 
-type MessageType = {
-    id: number
-    message: string
-}
-type DialogsType = {
-    id: number
-    name: string
-}
 
-type StateType = {
-    messages: MessageType[]
-    dialogs: DialogsType[]
 
-}
+
 
 type DialogsPropsType = {
-    state?: StateType
-    store:typeof store
+    store: typeof store
 
 
 }
@@ -34,8 +23,9 @@ const DialogsContainer = (props: DialogsPropsType) => {
         props.store.dispatch(sendMessageCreator())
 
     }
-    //////////////////////////
-    let onNewMessageChange = (e: ChangeEvent<HTMLTextAreaElement>, body: any) => {
+
+
+    let onNewMessageChange = (body: any) => {
        props.store.dispatch(updateNewMessageBodyCreator(body))
     }
 

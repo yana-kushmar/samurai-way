@@ -1,20 +1,16 @@
 import React from "react";
 
 import {addPostActionCreator, updatedNewPostTextCreator} from "../../../Redux/ProfileReducer";
+import store from "../../../Redux/redux-store";
 import MyPosts from "./MyPosts";
 
 
-type PostType = {
-    id: number
-    message: string
-    likesCount: number
-}
+
 
 type MyPostPropsType = {
-    posts: PostType[]
-    addPost: () => string
-    dispatch: (action: { type: string, newText?: any }) => void
-    store: any
+
+    // dispatch: (action: { type: string, newText?: any }) => void
+    store: typeof store
 
 
 }
@@ -37,7 +33,7 @@ const MyPostsContainer = (props: MyPostPropsType) => {
         <MyPosts
             updateNewPostText={onPostChange}
             addPost={addPost}
-            posts={state.profilePage}
+            posts={state.profilePage.posts}
             newPostText={state.profilePage.newPostText}
 
         />)

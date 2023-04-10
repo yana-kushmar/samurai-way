@@ -8,9 +8,14 @@ import News from "./components/News/News";
 import Music from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
 import DialogsContainer from "./components/Dialogs/DialogsContainers";
+import store from './Redux/redux-store';
+
+type AppPropsType = {
+    store: typeof store
+}
 
 
-const App = (props: any) => {
+const App = (props: AppPropsType) => {
 
     return (
         <BrowserRouter>
@@ -26,10 +31,6 @@ const App = (props: any) => {
                 <Route path='/profile'
                        render={() => <ProfileContent
                            store = {props.store}
-
-                           // profilePage={props.state.profilePage}
-                           // dispatch={props.dispatch}
-
                        />
                 }/>
                 <Route path='/news' render={() => <News />}/>

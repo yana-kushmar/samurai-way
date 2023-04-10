@@ -1,5 +1,4 @@
-import React from "react";
-import state from "./Store";
+
 
 const ADD_POST = "ADD-POST"
 const UPDATED_NEW_POST_TEXT = "UPDATED-NEW-POST-TEXT"

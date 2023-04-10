@@ -1,4 +1,4 @@
-import React from "react";
+
 
 
 const UPDATED_NEW_MESSAGE_BODY = "UPDATED_NEW_MESSAGE_BODY"
