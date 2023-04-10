@@ -1,5 +1,5 @@
 import React from 'react';
-import store from "./Redux/State";
+import store from "./Redux/redux-store";
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
@@ -24,4 +24,7 @@ import {BrowserRouter} from "react-router-dom";
 
 
  rerenderEntireTree(store.getState());
- store.subscribe(rerenderEntireTree)
+ store.subscribe(() => {
+     let state = store.getState()
+     rerenderEntireTree(state)
+ })

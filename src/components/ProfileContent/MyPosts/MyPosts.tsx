@@ -14,9 +14,10 @@ type PostType = {
 
 type MyPostPropsType = {
     posts: PostType[]
-    //addPost: () => string
+    onAddPost: () => string////////
+    addPost: () => string//////
     newPostText: string
-    //updateNewPostText: (text: string) => void
+    updateNewPostText: (text: string) => void
     dispatch: (action: { type: string, newText?: any }) => void
 
 }
@@ -27,16 +28,14 @@ const MyPosts = (props: MyPostPropsType) => {
 
     let newPostElement = React.createRef<any>()
 
-    let addPost = () => {
-        //props.addPost()
-        props.dispatch(addPostActionCreator())
+    let onAddPost = () => {
+        props.addPost()
     }
 
     let onPostChange = () => {
         let text = newPostElement.current.value
-        //props.updatedNewPostText(text)
-        let action = updatedNewPostTextCreator(text)
-        props.dispatch(action)
+        props.updateNewPostText(text)
+
     }
 
     return (
@@ -49,7 +48,7 @@ const MyPosts = (props: MyPostPropsType) => {
                               value={props.newPostText}/>
                 </div>
                 <div>
-                    <button onClick={addPost}>Add post</button>
+                    <button onClick={onAddPost}>Add post</button>
                 </div>
             </div>
             <div className={s.posts}>

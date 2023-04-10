@@ -3,12 +3,11 @@ import './App.css';
 import Header from "./components/Header/Header";
 import NavigationBar from "./components/NavigationBar/navigationBar";
 import ProfileContent from "./components/ProfileContent/ProfileContent";
-import Dialogs from "./components/Dialogs/Dialogs";
 import {BrowserRouter, Route} from "react-router-dom";
 import News from "./components/News/News";
 import Music from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
-import store from "./Redux/State";
+import DialogsContainer from "./components/Dialogs/DialogsContainers";
 
 
 const App = (props: any) => {
@@ -20,14 +19,16 @@ const App = (props: any) => {
             <NavigationBar/>
             <div className='app-wrapper-content'>
                 <Route path='/dialogs'
-                       render={() => <Dialogs
+                       render={() => <DialogsContainer
                            store={props.store}
                            />}
                 />
                 <Route path='/profile'
                        render={() => <ProfileContent
-                           profilePage={props.state.profilePage}
-                           dispatch={props.dispatch}
+                           store = {props.store}
+
+                           // profilePage={props.state.profilePage}
+                           // dispatch={props.dispatch}
 
                        />
                 }/>

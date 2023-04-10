@@ -1,11 +1,20 @@
 import React from "react";
-import state from "./State";
+import state from "./Store";
 
 const ADD_POST = "ADD-POST"
 const UPDATED_NEW_POST_TEXT = "UPDATED-NEW-POST-TEXT"
 
+let initialState = {
+    posts: [
+        {id: 1, message: 'Hi, how are u?', likesCount: 15},
+        {id: 2, message: "It's my first post", likesCount: 20},
+        {id: 3, message: "huy", likesCount: 20},
+    ],
+    newPostText: 'It-kamasutra.com'
+}
 
- const profileReducer = ({state, action}: any) => {
+
+ const profileReducer = (state = initialState, action: any) => {
 switch (action.type) {
     case ADD_POST:
         let newPost = {
