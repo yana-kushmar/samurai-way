@@ -9,13 +9,12 @@ import Music from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
 import DialogsContainer from "./components/Dialogs/DialogsContainers";
 import store from './Redux/redux-store';
-
-type AppPropsType = {
-    store: typeof store
-}
+import UsersContainer from "./components/FindUsers/UsersContainer";
 
 
-const App = (props: AppPropsType) => {
+
+
+const App = () => {
 
     return (
         <BrowserRouter>
@@ -24,15 +23,15 @@ const App = (props: AppPropsType) => {
             <NavigationBar/>
             <div className='app-wrapper-content'>
                 <Route path='/dialogs'
-                       render={() => <DialogsContainer
-                           store={props.store}
-                           />}
+                       render={() => <DialogsContainer/>}
                 />
                 <Route path='/profile'
-                       render={() => <ProfileContent
-                           store = {props.store}
-                       />
+                       render={() => <ProfileContent />
                 }/>
+
+                <Route path='/users'
+                       render={() => <UsersContainer />
+                       }/>
                 <Route path='/news' render={() => <News />}/>
                 <Route path='/music' render={() => <Music />}/>
                 <Route path='/settings' render={() => <Settings />}/>

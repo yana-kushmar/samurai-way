@@ -6,15 +6,6 @@ import {connect} from "react-redux";
 
 
 
-//
-// type MyPostPropsType = {
-//
-//     dispatch: (action: { type: string, newText?: any }) => void
-//     store: typeof store
-//
-// }
-
-
 
 
 let mapStateToProps = (state: any):any => {
