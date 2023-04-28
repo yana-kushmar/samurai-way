@@ -1,6 +1,8 @@
 import React from "react";
 import s from "./Users.module.css"
 import type {UserType} from "../../Redux/usersReducer";
+import axios from "axios";
+import userFoto from "./../../Assets/images/photo.png"
 
 
 type UsersContainerPropsType = {
@@ -13,53 +15,36 @@ type UsersContainerPropsType = {
 }
 
 
-const UsersContainer = (props: UsersContainerPropsType) => {
+const Users = (props: UsersContainerPropsType) => {
 
-    if (props.users.length === 0) {
-        props.setUsers([
-            {
-                id: 1,
-                photoURL: "https://fikiwiki.com/uploads/posts/2022-02/1645033331_1-fikiwiki-com-p-krasivie-kartinki-na-smartfon-1.jpg",
-                followed: true,
-                fullName: 'Yana',
-                status: 'im girl',
-                location: {city: "New York", country: "USA"}
-            },
-            {
-                id: 2,
-                photoURL: "https://fikiwiki.com/uploads/posts/2022-02/1645033331_1-fikiwiki-com-p-krasivie-kartinki-na-smartfon-1.jpg",
-                followed: true,
-                fullName: 'Igor',
-                status: 'im boy',
-                location: {city: "Brest", country: "Belarus"}
-            },
-            {
-                id: 3,
-                photoURL: "https://fikiwiki.com/uploads/posts/2022-02/1645033331_1-fikiwiki-com-p-krasivie-kartinki-na-smartfon-1.jpg",
-                followed: true,
-                fullName: 'Kuybi',
-                status: 'im cat',
-                location: {city: "Brest", country: "Belarus"}
-            },
-            {
-                id: 4,
-                photoURL: "https://fikiwiki.com/uploads/posts/2022-02/1645033331_1-fikiwiki-com-p-krasivie-kartinki-na-smartfon-1.jpg",
-                followed: false,
-                fullName: 'Max',
-                status: 'im trans',
-                location: {city: "Bali", country: "Indonesia"}
-            },
+    let getUsers = () => {
 
-        ])
+        if (props.users.length === 0) {
+
+            axios.get("https://social-network.samuraijs.com/api/1.0/users")
+                .then(res => {
+                    props.setUsers(res.data.items)
+                })
+        }
     }
+
+    //componentDidAmount() {
+    // axios.get("https://social-network.samuraijs.com/api/1.0/users")
+    //                 .then(res => {
+    //                     props.setUsers(res.data.items)
+//}
+
+
+
 
 
     return <div>
+        <button onClick={getUsers}>Get Users</button>
         {
             props.users.map(el => <div key={el.id}>
                 <span>
                     <div>
-                        <img src={el.photoURL} alt="avatar" className={s.usersPhoto}/>
+                        <img src={el.photos.small !== null ? el.photos.small : userFoto} alt="avatar" className={s.usersPhoto}/>
                     </div>
                     <div>
                         {el.followed
@@ -74,12 +59,12 @@ const UsersContainer = (props: UsersContainerPropsType) => {
                 </span>
                 <span>
                     <span>
-                        <div>{el.fullName}</div>
+                        <div>{el.name}</div>
                         <div>{el.status}</div>
                     </span>
                     <span>
-                        <div>{el.location.country}</div>
-                        <div>{el.location.city}</div>
+                        <div>{"el.location.country"}</div>
+                        <div>{"el.location.city"}</div>
                     </span>
                 </span>
             </div>)}
@@ -87,4 +72,4 @@ const UsersContainer = (props: UsersContainerPropsType) => {
 
 }
 
-export default UsersContainer
+export default Users
