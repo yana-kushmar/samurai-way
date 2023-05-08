@@ -21,7 +21,6 @@ type StateType = {
 
 type DialogsPropsType = {
     dialogsPage: StateType
- 
     sendMessage: () => void
     updateNewMessageBody: (body: any) => void
 

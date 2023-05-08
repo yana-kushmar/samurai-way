@@ -23,9 +23,7 @@ type MyPostPropsType = {
 
 const MyPosts = (props: MyPostPropsType) => {
     let postsElements = props.posts.map((p) => <Post message={p.message} likesCount={p.likesCount}/>)
-
     let newPostElement = React.createRef<any>()
-
     let onAddPost = () => {
         props.addPost()
     }
