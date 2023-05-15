@@ -1,47 +1,48 @@
-import {connect, useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector} from "react-redux";
 
 import {
     follow,
-    setCurrentPage, setIsFetching,
+    setCurrentPage, setFollowingInProgress, setIsFetching,
     setUsers,
     setUsersTotalCount,
     unfollow, UsersStateType,
-
-    UserType
 } from "../../Redux/usersReducer";
 import {StateType} from "../../Redux/redux-store";
 
-
 import React, {useEffect} from "react";
-import axios from "axios";
+
 import Users from "./Users";
 import Preloader from "../../Common/Preloader/Preloader";
+import { UsersAPI} from "../../API/api";
 
+///проблемы с получением данных через axios
 
 const UsersContainer = () => {
     const dispatch = useDispatch()
-    const {users, pageSize, totalUsersCount, currentPage, isFetching} = useSelector<StateType, UsersStateType>(state => state.usersPage)
+    const {users, pageSize, totalUsersCount, currentPage, isFetching, followingInProgress} = useSelector<StateType, UsersStateType>(state => state.usersPage)
 
     useEffect(() => {
         getUsers()
     }, [])
 
+
     const getUsers = () => {
         dispatch(setIsFetching(true))
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${currentPage}&count=${pageSize}`)
-            .then(res => {
+    UsersAPI.getUsers(currentPage, pageSize)
+                .then(data => {
                 dispatch(setIsFetching(false))
-                dispatch(setUsers(res.data.items))
-                dispatch(setUsersTotalCount(res.data.totalCount))
+                dispatch(setUsers(data.items))
+                dispatch(setUsersTotalCount(data.totalCount))
             })
     }
 
     const onPageChanged = (pageNumber: number) => {
         dispatch(setCurrentPage(pageNumber))
         dispatch(setIsFetching(true))
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${pageNumber}&count=${pageSize}`)
-            .then(res => {
-                dispatch(setUsers(res.data.items))
+
+        UsersAPI.getUsers(currentPage, pageNumber)
+            .then(data => {
+                dispatch(setUsers(data.items))
                 dispatch(setIsFetching(false))
             })
 
@@ -50,10 +51,12 @@ const UsersContainer = () => {
     return <>
         {isFetching ? <Preloader/> : null}
         <Users
+            setFollowingInProgress={(isFetching, userId) => dispatch(setFollowingInProgress(isFetching, userId))}
             totalUsersCount={totalUsersCount}
             pageSize={pageSize}
             currentPage={currentPage}
             onPageChanged={onPageChanged}
+            followingInProgress={followingInProgress}
             getUsers={getUsers}
             users={users}
             follow={(userId: number) => dispatch(follow(userId))}
@@ -64,7 +67,7 @@ const UsersContainer = () => {
 
 }
 
-
+/////setFollowingInProgress
 export default UsersContainer
 
 

@@ -8,3 +8,11 @@
 .header img {
     width: 20px;
 }
+
+.loginBlock {
+    display: flex;
+align-items: center;
+    justify-content: center;
+
+
+}
