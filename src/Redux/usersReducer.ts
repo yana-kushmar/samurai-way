@@ -1,3 +1,5 @@
+import {UsersAPI} from "../API/api";
+
 const FOLLOW = "FOLLOW"
 const UNFOLLOW = "UNFOLLOW"
 const SET_USERS = "SET_USERS"
@@ -114,13 +116,53 @@ const usersReducer = (state: UsersStateType = initialState, action: UsersAT) => 
 }
 
 
-export const follow = (userId: number) => ({type: FOLLOW, userId})
-export const unfollow = (userId: number) => ({type: UNFOLLOW, userId})
+export const followSuccess = (userId: number) => ({type: FOLLOW, userId})
+export const acceptUnfollow = (userId: number) => ({type: UNFOLLOW, userId})
 export const setUsers = (users: UserType[]) => ({type: SET_USERS, users})
 export const setCurrentPage = (currentPage: number) => ({type: SET_CURRENT_PAGE, currentPage})
 export const setUsersTotalCount = (totalCount: number) => ({type: SET_USERS_TOTAL_COUNT, totalCount})
 export const setIsFetching = (isFetching: boolean) => ({type: IS_FETCHING, isFetching})
 export const setFollowingInProgress = (isFetching: boolean, userId: number) => ({type: FOLLOWING_IN_PROGRESS, isFetching, userId})
+
+
+///thunk
+export const getUsers = (currentPage: number, pageSize: number) =>{
+    return (dispatch: any) => {
+        dispatch(setIsFetching(true))
+        UsersAPI.getUsers(currentPage, pageSize)
+            .then(data => {
+                dispatch(setIsFetching(false))
+                dispatch(setUsers(data.items))
+                dispatch(setUsersTotalCount(data.totalCount))
+            })
+
+    }
+}
+export const follow = (userId: number) =>{
+
+    return (dispatch: any) => {
+        dispatch(setFollowingInProgress(true, userId))
+        UsersAPI.follow(userId)
+            .then(res => {
+                if (res.data.resultCode === 0) {
+                    dispatch(followSuccess(userId))
+                }
+                dispatch(setFollowingInProgress(false, userId))
+            })
+    }
+}
+export const unfollow = (userId: number) =>{
+
+    return (dispatch: any) => {
+        dispatch(setFollowingInProgress(true, userId))
+        UsersAPI.unfollow(userId)
+            .then(res => {
+                if (res.data.resultCode === 0) {
+                 dispatch(acceptUnfollow(userId))
+                }
+                dispatch(setFollowingInProgress(false, userId))
+            })
+}}
 
 
 export default usersReducer

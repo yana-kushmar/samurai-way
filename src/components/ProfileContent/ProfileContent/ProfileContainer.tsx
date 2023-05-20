@@ -1,47 +1,42 @@
 import React, {useEffect} from 'react';
 import ProfileInfo from "../ProfileInfo/ProfileInfo";
 import MyPostsContainer from "../MyPosts/MyPostsContainer";
-import axios from "axios";
+
 import {connect, useDispatch, useSelector} from "react-redux";
-import {setUserProfile} from "../../../Redux/ProfileReducer";
-import {withRouter} from "react-router-dom";
+import {getUserProfile, setUserProfile} from "../../../Redux/ProfileReducer";
+import {Redirect, withRouter} from "react-router-dom";
 
 
-// type ProfileContainerType = {
-//     pofile:
-//     setUserProfile: () => void
-// }
+
+
+
 
 
 const ProfileContainer = (props: any) => {
-    // const dispatch = useDispatch()
-    // const profileState = useSelector<any, any>(state => state.profilePage.profile)
+    const dispatch = useDispatch()
+    const profile = useSelector<any, any>(store => store.profilePage.profile)
+    const isAuth = useSelector<any, any>(store => store.auth.isAuth)
 
     let userId = props.match.params.userId
     if (!userId) {
         userId = 1
     }
     useEffect(() => {
-        axios.get('https://social-network.samuraijs.com/api/1.0/profile/' + userId)
-            .then(res => {
-                props.setUserProfile(res.data)
-            })
+        getUserProfile(userId)
     }, [])
 
-
+    if (!isAuth) return <Redirect to={"/login"} />
     return (
+
         <div>
-            <ProfileInfo {...props} profile={props.profile}/>
+            <ProfileInfo {...props} profile={profile}/>
             <MyPostsContainer/>
 
         </div>
     );
 };
 
-let mapStateToProps = (state: any) => ({
-    profile: state.profilePage.profile
 
-})
 
 const urlDataContainerComponent = withRouter(ProfileContainer)
 

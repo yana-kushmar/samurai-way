@@ -1,50 +1,38 @@
 import { useDispatch, useSelector} from "react-redux";
 
-import {
-    follow,
-    setCurrentPage, setFollowingInProgress, setIsFetching,
-    setUsers,
-    setUsersTotalCount,
-    unfollow, UsersStateType,
-} from "../../Redux/usersReducer";
+import {acceptUnfollow, followSuccess, getUsers, setFollowingInProgress, UsersStateType,} from "../../Redux/usersReducer";
 import {StateType} from "../../Redux/redux-store";
 
 import React, {useEffect} from "react";
-
 import Users from "./Users";
 import Preloader from "../../Common/Preloader/Preloader";
-import { UsersAPI} from "../../API/api";
 
-///проблемы с получением данных через axios
+
 
 const UsersContainer = () => {
     const dispatch = useDispatch()
     const {users, pageSize, totalUsersCount, currentPage, isFetching, followingInProgress} = useSelector<StateType, UsersStateType>(state => state.usersPage)
 
     useEffect(() => {
-        getUsers()
-    }, [])
+        getUsers(currentPage, pageSize)
+    }, [currentPage, pageSize]) // передала как зависимость
 
 
-    const getUsers = () => {
-        dispatch(setIsFetching(true))
-    UsersAPI.getUsers(currentPage, pageSize)
-                .then(data => {
-                dispatch(setIsFetching(false))
-                dispatch(setUsers(data.items))
-                dispatch(setUsersTotalCount(data.totalCount))
-            })
-    }
+    // const getUsers = (currentPage: number, pageSize: number) => {
+    // getUsers()
+    // }
 
     const onPageChanged = (pageNumber: number) => {
-        dispatch(setCurrentPage(pageNumber))
-        dispatch(setIsFetching(true))
+        getUsers(pageNumber, pageSize)
 
-        UsersAPI.getUsers(currentPage, pageNumber)
-            .then(data => {
-                dispatch(setUsers(data.items))
-                dispatch(setIsFetching(false))
-            })
+        // dispatch(setCurrentPage(pageNumber))
+        // dispatch(setIsFetching(true))
+        //
+        // UsersAPI.getUsers(currentPage, pageNumber)
+        //     .then(data => {
+        //         dispatch(setUsers(data.items))
+        //         dispatch(setIsFetching(false))
+        //     })
 
     }
 
@@ -59,8 +47,8 @@ const UsersContainer = () => {
             followingInProgress={followingInProgress}
             getUsers={getUsers}
             users={users}
-            follow={(userId: number) => dispatch(follow(userId))}
-            unfollow={(userId: number) => dispatch(unfollow(userId))}
+            follow={(userId: number) => dispatch(followSuccess(userId))}
+            unfollow={(userId: number) => dispatch(acceptUnfollow(userId))}
 
         />
     </>

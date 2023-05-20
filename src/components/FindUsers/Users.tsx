@@ -1,10 +1,10 @@
 import React from 'react';
 import s from "./Users.module.css";
 import userPhoto from "../../Assets/images/photo.png";
-import { UserType} from "../../Redux/usersReducer";
+import {getUsers, UserType} from "../../Redux/usersReducer";
 import {NavLink} from "react-router-dom";
 import axios from "axios";
-import {instance} from "../../API/api";
+import {instance, UsersAPI} from "../../API/api";
 
 
 
@@ -16,7 +16,7 @@ type UsersContainerPropsType = {
     onPageChanged: (p: number) => void
     setFollowingInProgress: (isFetching: boolean, userId: number) => void
     followingInProgress: number[]
-    getUsers: () => void
+    getUsers: (currentPage: number, pageSize: number) => (dispatch: any) => void/////
     totalUsersCount: number
     pageSize: number
     currentPage: number
@@ -57,32 +57,11 @@ const Users = (props: UsersContainerPropsType) => {
 
                         {el.followed
                             ? <button disabled={props.followingInProgress.some(id => id === el.id)}
-                                      onClick={() => {
-                                props.setFollowingInProgress(true, el.id)
-                                          instance.delete(`follow/${el.id}`
-                                )
-                                    .then(res => {
-                                        if (res.data.resultCode === 0) {
-                                            props.unfollow(el.id)
-                                        }
-                                        props.setFollowingInProgress(false, el.id)
-                                    })
-
-
-
-                            }}>Unfollow</button>
+                                      onClick={() => {props.unfollow(el.id)
+                                      }}>Unfollow</button>
                             : <button
                                 disabled={props.followingInProgress.some(id => id === el.id)}
-                                onClick={() => {
-                                props.setFollowingInProgress(true, el.id)
-                                    instance.post(`follow/${el.id}`,{})
-                                    .then(res => {
-                                        if (res.data.resultCode === 0) {
-                                            props.follow(el.id)
-                                        }
-                                        props.setFollowingInProgress(false, el.id)
-                                    })
-
+                                onClick={() => {props.follow(el.id)
                             }}>Follow</button>}
 
                     </div>
