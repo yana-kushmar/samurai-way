@@ -6,6 +6,8 @@ import {StateType} from "../../Redux/redux-store";
 import React, {useEffect} from "react";
 import Users from "./Users";
 import Preloader from "../../Common/Preloader/Preloader";
+import {withAuthRedirect} from "../../hoc/WithAuthRedirect";
+import {compose} from "redux";
 
 
 
@@ -17,10 +19,6 @@ const UsersContainer = () => {
         getUsers(currentPage, pageSize)
     }, [currentPage, pageSize]) // передала как зависимость
 
-
-    // const getUsers = (currentPage: number, pageSize: number) => {
-    // getUsers()
-    // }
 
     const onPageChanged = (pageNumber: number) => {
         getUsers(pageNumber, pageSize)
@@ -54,6 +52,13 @@ const UsersContainer = () => {
     </>
 
 }
+
+ compose(
+    withAuthRedirect
+    //connect
+)(UsersContainer)
+
+//let withRedirect =withAuthRedirect(UsersContainer)
 
 /////setFollowingInProgress
 export default UsersContainer
