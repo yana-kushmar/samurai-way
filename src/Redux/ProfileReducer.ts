@@ -1,18 +1,22 @@
-import {UsersAPI} from "../API/api";
+import {profileAPI} from "../API/api";
+import {ActionsType} from "./types";
+
+import {ThunkAction} from "redux-thunk";
+import {AppRootStateType} from "./redux-store";
 
 const ADD_POST = "ADD-POST"
-const UPDATED_NEW_POST_TEXT = "UPDATED-NEW-POST-TEXT"
+
 const SET_USERS_PROFILE = "SET_USERS_PROFILE"
+const SET_USERS_STATUS = "SET_USERS_STATUS"
 
-
-type usersProfileType = {
+type UsersProfileType = {
     userId: number
     lookingForAJob: boolean
     lookingForAJobDescription: string
     fullName: string
-    contacts: contactsType
+    contacts: ContactsType
 }
-type contactsType = {
+type ContactsType = {
     github: string
     vk: string
     facebook: string
@@ -22,76 +26,110 @@ type contactsType = {
     youtube: string
     mainLink: string
 }
-type postType = {
+type PostType = {
     id: number
     message: string
     likesCount: number
 }
-type initialStateType = {
-    posts: postType[]
-    newPostText: string
-    profile: usersProfileType
+type ProfileReducerStateType = {
+    posts: PostType[]
+    profile:  UsersProfileType | null,
+    status: string
+    userId: null | number
 }
 
+type AddPostAC = {
+    text: string
+}
 
-let initialState  = {
+type SetUserProfileAC = {
+    profile: UsersProfileType
+}
+type SetUserStatusAC = {
+    status: string
+}
+
+const initialState: ProfileReducerStateType = {
     posts: [
         {id: 1, message: 'Hi, how are u?', likesCount: 15},
         {id: 2, message: "It's my first post", likesCount: 20},
         {id: 3, message: "huy", likesCount: 20},
     ],
-    newPostText: 'It-kamasutra.com',
-    profile: null
+    profile: null,
+    status: '',
+    userId: null
 }
+type ProfileReducerAT = ActionsType<AddPostAC & SetUserProfileAC & SetUserStatusAC>
+
+const profileReducer = (state: ProfileReducerStateType = initialState, action: ProfileReducerAT) => {
+    switch (action.type) {
+        case ADD_POST:
+            let newPost = {
+                id: 5,
+                message: action.payload.text,
+                likesCount: 0
+            }
+
+            return {
+                ...state,
+                posts: [...state.posts, newPost],
+                newPostText: ""
+            }
+        case SET_USERS_PROFILE:
+            return {
+                ...state,
+                profile: action.payload.profile
+            }
+        case SET_USERS_STATUS:
+            return {
+                ...state,
+                status: action.payload.status
+            }
 
 
-
-
- const profileReducer = (state = initialState, action: any) => {
-switch (action.type) {
-    case ADD_POST:
-        let newPost = {
-            id: 5,
-            message: state.newPostText,
-            likesCount: 0
-        }
-
-        return  {...state,
-            posts: [...state.posts, newPost],
-            newPostText: ""}
-
-
-
-    case UPDATED_NEW_POST_TEXT:
-        return {...state,
-            newPostText: action.newText
-        }
-    case SET_USERS_PROFILE: {
-        return {
-            ...state,
-            profile: action.profile
-
-        }
+        default:
+            return state
     }
-
-    default:
-        return state
-}
 }
 
 
+export const addPostActionCreator = (text: string): ActionsType<AddPostAC>  => ({ type: ADD_POST ,payload: {text}})
 
-export const addPostActionCreator = () => ({type: ADD_POST})
-export const updatedNewPostTextCreator = (text: string) => ({type: UPDATED_NEW_POST_TEXT, newText: text})
-export const setUserProfile = (profile: usersProfileType) => ({type: SET_USERS_PROFILE, profile})
+export const setUserProfile = (profile: UsersProfileType): ActionsType<SetUserProfileAC> => ({
+    type: SET_USERS_PROFILE,
+    payload: {profile}
+})
+export const setUserStatus = (status: string): ActionsType<SetUserStatusAC> => ({
+    type: SET_USERS_STATUS,
+    payload: {status}
+})
 
 
 //thunk
-export const getUserProfile = (userId: number) => {
-    return (dispatch: any) => {
-        UsersAPI.getUserProfile(userId)
+export const getUserProfileTC = (userId: number): ThunkAction<void, AppRootStateType, {}, ActionsType<SetUserProfileAC>> => {
+    return (dispatch): void => {
+        profileAPI.getUserProfile(userId)
             .then(res => {
                 dispatch(setUserProfile(res.data))
+            })
+    }
+}
+
+export const setUserStatusTC = (userId: number): ThunkAction<void, AppRootStateType, {}, ActionsType<SetUserStatusAC>> => {
+    return (dispatch): void => {
+        profileAPI.getStatus(userId)
+            .then(res => {
+                dispatch(setUserStatus(res.data))
+            })
+    }
+}
+export const updateUserStatusTC = (status: string): ThunkAction<void, AppRootStateType, {}, ActionsType<SetUserStatusAC>> => {
+    return (dispatch): void => {
+        profileAPI.updateStatus(status)
+            .then(res => {
+                if (res.data.resultCode === 0) {
+                    dispatch(setUserStatus(status))
+                }
             })
     }
 }

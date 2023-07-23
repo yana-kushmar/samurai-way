@@ -2,7 +2,9 @@ import React, {ChangeEvent} from "react";
 import s from './Dialogs.module.css'
 import DialogItem from "./DialogItem/dialogItem";
 import Message from "./Message/Message";
-import {Redirect} from "react-router-dom";
+
+import {ErrorMessage, Field, Form, Formik} from "formik";
+
 
 type MessageType = {
     id: number
@@ -12,46 +14,32 @@ type DialogsType = {
     id: number
     name: string
 }
-
 type StateType = {
     messages: MessageType[]
     dialogs: DialogsType[]
     newMessageBody: string
 
 }
-
 type DialogsPropsType = {
     dialogsPage: StateType
-    sendMessage: () => void
-    updateNewMessageBody: (body: any) => void
+    sendMessage: (text: string) => void
     isAuth: boolean
 
 }
 
 const Dialogs = (props: DialogsPropsType) => {
 
-    let state = props.dialogsPage
+    const state = props.dialogsPage
 
-    let dialogsElements = state.dialogs
+    const dialogsElements = state.dialogs
         .map(d => <DialogItem name={d.name} id={d.id} key={d.id}/>)
 
 
-    let messagesElements = state.messages
+    const messagesElements = state.messages
         .map(m => <Message message={m.message} key={m.id}/>)
 
-    let newMessageBody = state.newMessageBody
 
-    let onSendMessageClick = () => {
-        props.sendMessage()
-
-    }
-    let onNewMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        let body = e.currentTarget.value
-        props.updateNewMessageBody(body)
-
-    }
-
-    if (!props.isAuth) return <Redirect to={"/login"} />
+    // if (!props.isAuth) return <Navigate to={"/login"} />
 
 
     return (
@@ -62,19 +50,26 @@ const Dialogs = (props: DialogsPropsType) => {
             </div>
             <div className={s.messages}>
                 <div>{messagesElements}</div>
-                <div>
-                    <div>
-                        <textarea
-                            value={newMessageBody}
-                            onChange={onNewMessageChange}
-                            placeholder='enter u message'></textarea>
-                    </div>
-                    <div>
-                        <button onClick={onSendMessageClick}>
-                            Send
-                        </button>
-                    </div>
-                </div>
+
+                <Formik
+                    initialValues={{newMessageBody: ''}}
+
+                    onSubmit={(values, {setSubmitting, resetForm}) => {
+                        props.sendMessage(values.newMessageBody)
+                        setSubmitting(false)
+                        resetForm()
+                    }
+                    }>
+                    {({isSubmitting}) => (
+                        <Form>
+                            <Field type="newMessageBody" name="newMessageBody"/>
+                            <ErrorMessage name="newPostText" component="div"/>
+                            <button type="submit" disabled={isSubmitting}>
+                                Send
+                            </button>
+                        </Form>
+                    )}
+                </Formik>
             </div>
         </div>
     )

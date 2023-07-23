@@ -1,36 +1,51 @@
-import { useDispatch, useSelector} from "react-redux";
-
-import {acceptUnfollow, followSuccess, getUsers, setFollowingInProgress, UsersStateType,} from "../../Redux/usersReducer";
-import {StateType} from "../../Redux/redux-store";
+import {
+    acceptUnfollow,
+    followSuccess,
+    getUsersTC,
+    setCurrentPage,
+    setFollowingInProgress,
+    setIsFetching,
+    setUsers,
+} from "../../Redux/usersReducer";
 
 import React, {useEffect} from "react";
 import Users from "./Users";
 import Preloader from "../../Common/Preloader/Preloader";
-import {withAuthRedirect} from "../../hoc/WithAuthRedirect";
-import {compose} from "redux";
 
+import {compose} from "redux";
+import {UsersAPI} from "../../API/api";
+import {useAppDispatch, useAppSelector} from "../../Redux/redux-store";
+import {useIsLoggedIn} from "../../hooks/useIsLoggedIn";
 
 
 const UsersContainer = () => {
-    const dispatch = useDispatch()
-    const {users, pageSize, totalUsersCount, currentPage, isFetching, followingInProgress} = useSelector<StateType, UsersStateType>(state => state.usersPage)
+    useIsLoggedIn()
+    const dispatch = useAppDispatch()
+    const {
+        users,
+        pageSize,
+        totalUsersCount,
+        currentPage,
+        isFetching,
+        followingInProgress
+    } = useAppSelector(state => state.usersPage)
 
     useEffect(() => {
-        getUsers(currentPage, pageSize)
+        dispatch(getUsersTC(currentPage, pageSize))
     }, [currentPage, pageSize]) // передала как зависимость
 
 
     const onPageChanged = (pageNumber: number) => {
-        getUsers(pageNumber, pageSize)
+        getUsersTC(pageNumber, pageSize)
 
-        // dispatch(setCurrentPage(pageNumber))
-        // dispatch(setIsFetching(true))
-        //
-        // UsersAPI.getUsers(currentPage, pageNumber)
-        //     .then(data => {
-        //         dispatch(setUsers(data.items))
-        //         dispatch(setIsFetching(false))
-        //     })
+        dispatch(setCurrentPage(pageNumber))
+        dispatch(setIsFetching(true))
+
+        UsersAPI.getUsers(currentPage, pageNumber)
+            .then(data => {
+                dispatch(setUsers(data.items))
+                dispatch(setIsFetching(false))
+            })
 
     }
 
@@ -43,7 +58,7 @@ const UsersContainer = () => {
             currentPage={currentPage}
             onPageChanged={onPageChanged}
             followingInProgress={followingInProgress}
-            getUsers={getUsers}
+            getUsers={getUsersTC}
             users={users}
             follow={(userId: number) => dispatch(followSuccess(userId))}
             unfollow={(userId: number) => dispatch(acceptUnfollow(userId))}
@@ -53,15 +68,15 @@ const UsersContainer = () => {
 
 }
 
- compose(
-    withAuthRedirect
+export default compose(
+    // withAuthRedirect
     //connect
 )(UsersContainer)
 
 //let withRedirect =withAuthRedirect(UsersContainer)
 
 /////setFollowingInProgress
-export default UsersContainer
+
 
 
 

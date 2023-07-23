@@ -1,10 +1,9 @@
 import React from 'react';
 import s from "./Users.module.css";
 import userPhoto from "../../Assets/images/photo.png";
-import {getUsers, UserType} from "../../Redux/usersReducer";
+import { UserType} from "../../Redux/usersReducer";
 import {NavLink} from "react-router-dom";
-import axios from "axios";
-import {instance, UsersAPI} from "../../API/api";
+
 
 
 
@@ -32,6 +31,8 @@ const Users = (props: UsersContainerPropsType) => {
         pages.push(i)
     }
 
+
+
     return (
         <div>
             <div>
@@ -43,7 +44,7 @@ const Users = (props: UsersContainerPropsType) => {
                     >{p}</span>
                 })}
             </div>
-            <button onClick={props.getUsers}>Get Users</button> //UsersAPI
+            <button onClick={() => props.getUsers(props.currentPage, props.pageSize)}>Get Users</button>
             {
                 props.users.map(el => <div key={el.id}>
                 <span>

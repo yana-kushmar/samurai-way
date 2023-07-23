@@ -1,4 +1,5 @@
 import {UsersAPI} from "../API/api";
+import {ActionsType} from "./types";
 
 const FOLLOW = "FOLLOW"
 const UNFOLLOW = "UNFOLLOW"
@@ -16,8 +17,6 @@ export type UsersStateType = {
     currentPage: number
     isFetching: boolean
     followingInProgress: number[]
-
-
 }
 export type UserType = {
     name: string,
@@ -27,28 +26,17 @@ export type UserType = {
     status: string
     followed: boolean
 }
-
-
-
 type PhotosType = {
     small: string
     large: string
 }
-export type UsersAT = {
-    type: string,
-    userId?: number,
+export type SetUsersAT = {
     users?: UserType[]
-    currentPage?: number
-    totalCount?: number
-    isFetching?: boolean
-    followingInProgress?: number[]
-
-
 
     //типизация action если я не знаю какие ключи и какие у них значения
     //[x: string]: any
 }
-let initialState = {
+const initialState = {
     users: [],
     currentPage: 1,
     pageSize: 8,
@@ -57,15 +45,36 @@ let initialState = {
     followingInProgress: [],
 }
 
+type FollowUnfollowSuccessAT={
+    userId: number
+}
 
-const usersReducer = (state: UsersStateType = initialState, action: UsersAT) => {
+type SetCurrentPageAT = {
+    currentPage: number
+}
+type SetUserTotalCountAT = {
+    totalCount: number
+}
+type SetIsFetchingAT = {
+    isFetching: boolean
+}
+type SetFollowingInProgressAT = {
+    isFetching: boolean
+    userId: number
+}
+
+type UsersReducerAT = ActionsType<SetUsersAT & FollowUnfollowSuccessAT & SetCurrentPageAT & SetUserTotalCountAT & SetIsFetchingAT & SetFollowingInProgressAT>
+
+
+
+const usersReducer = (state: UsersStateType = initialState, action: UsersReducerAT) => {
 
     switch (action.type) {
         case FOLLOW:
             return {
                 ...state,
                 users: state.users.map(el => {
-                    if (el.id === action.userId) {
+                    if (el.id === action.payload.userId) {
                         return {...el, followed: true}
                     }
                     return el
@@ -75,7 +84,7 @@ const usersReducer = (state: UsersStateType = initialState, action: UsersAT) => 
             return {
                 ...state,
                 users: state.users.map(el => {
-                    if (el.id === action.userId) {
+                    if (el.id === action.payload.userId) {
                         return {...el, followed: false}
                     }
                     return el
@@ -84,29 +93,29 @@ const usersReducer = (state: UsersStateType = initialState, action: UsersAT) => 
         case SET_USERS:
             return {
                 ...state,
-                users: action.users
+                users: action.payload.users
             }
         case SET_CURRENT_PAGE:
             return {
                 ...state,
-                currentPage: action.currentPage
+                currentPage: action.payload.currentPage
             }
         case SET_USERS_TOTAL_COUNT:
             return {
                 ...state,
-                totalUsersCount: action.totalCount
+                totalUsersCount: action.payload.totalCount
             }
         case IS_FETCHING:
             return {
                 ...state,
-                isFetching: action.isFetching
+                isFetching: action.payload.isFetching
             }
         case FOLLOWING_IN_PROGRESS:
             return {
                 ...state,
-                followingInProgress: action.isFetching
-                    ? [...state.followingInProgress, action.userId]
-                    : state.followingInProgress.filter(id => id !== action.userId)
+                followingInProgress: action.payload.isFetching
+                    ? [...state.followingInProgress, action.payload.userId]
+                    : state.followingInProgress.filter(id => id !== action.payload.userId)
             }
 
         default:
@@ -116,17 +125,19 @@ const usersReducer = (state: UsersStateType = initialState, action: UsersAT) => 
 }
 
 
-export const followSuccess = (userId: number) => ({type: FOLLOW, userId})
-export const acceptUnfollow = (userId: number) => ({type: UNFOLLOW, userId})
-export const setUsers = (users: UserType[]) => ({type: SET_USERS, users})
-export const setCurrentPage = (currentPage: number) => ({type: SET_CURRENT_PAGE, currentPage})
-export const setUsersTotalCount = (totalCount: number) => ({type: SET_USERS_TOTAL_COUNT, totalCount})
-export const setIsFetching = (isFetching: boolean) => ({type: IS_FETCHING, isFetching})
-export const setFollowingInProgress = (isFetching: boolean, userId: number) => ({type: FOLLOWING_IN_PROGRESS, isFetching, userId})
+
+
+export const followSuccess = (userId: number): ActionsType<FollowUnfollowSuccessAT> => ({type: FOLLOW, payload: {userId}})
+export const acceptUnfollow = (userId: number):  ActionsType<FollowUnfollowSuccessAT> => ({type: UNFOLLOW, payload: {userId}})
+export const setUsers = (users: UserType[]): ActionsType<SetUsersAT> => ({type: SET_USERS, payload: {users}})
+export const setCurrentPage = (currentPage: number): ActionsType<SetCurrentPageAT> => ({type: SET_CURRENT_PAGE, payload: {currentPage}})
+export const setUsersTotalCount = (totalCount: number): ActionsType<SetUserTotalCountAT> => ({type: SET_USERS_TOTAL_COUNT, payload: {totalCount}})
+export const setIsFetching = (isFetching: boolean): ActionsType<SetIsFetchingAT> => ({type: IS_FETCHING, payload: {isFetching}})
+export const setFollowingInProgress = (isFetching: boolean, userId: number): ActionsType<SetFollowingInProgressAT> => ({type: FOLLOWING_IN_PROGRESS, payload: {isFetching, userId}})
 
 
 ///thunk
-export const getUsers = (currentPage: number, pageSize: number) =>{
+export const getUsersTC = (currentPage: number, pageSize: number): any =>{
     return (dispatch: any) => {
         dispatch(setIsFetching(true))
         UsersAPI.getUsers(currentPage, pageSize)

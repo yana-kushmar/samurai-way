@@ -1,8 +1,9 @@
 import React from 'react';
+import {Login} from "./Login/Login";
 
 const LoginContainer = () => {
     return <>
-        <h1>LOGIN</h1>
+        <Login/>
         </>
 };
 

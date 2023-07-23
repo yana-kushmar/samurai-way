@@ -1,7 +1,10 @@
-const UPDATED_NEW_MESSAGE_BODY = "UPDATED_NEW_MESSAGE_BODY"
+import {ActionsType} from "./types";
+
 const SEND_MESSAGE = "SEND_MESSAGE"
 
-
+type SendMessageAT = {
+    text: string
+}
 let initialState = {
     dialogs: [
         {id: 1, name: "Yana"},
@@ -22,37 +25,25 @@ let initialState = {
     newMessageBody: ""
 }
 
-const dialogsReducer = (state = initialState, action: any) => {
+type DialogsReducerAT = ActionsType<SendMessageAT>
+
+
+const dialogsReducer = (state = initialState, action: DialogsReducerAT) => {
 
     switch (action.type) {
-        case UPDATED_NEW_MESSAGE_BODY:
-        // && action.body:
-            return {
-                ...state,
-                newMessageBody: action.body
-
-            }
-
-
         case SEND_MESSAGE:
-            let body = state.newMessageBody
+            let body = action.payload.text
             return {...state,
                 newMessageBody: "",
                 messages: [...state.messages, {id: 6, message: body}]
             }
-
         default:
             return state
-
-
     }
 
 }
 
-export const sendMessageCreator = () => ({type: SEND_MESSAGE})
-
-export const updateNewMessageBodyCreator = (body: string) =>
-    ({type: UPDATED_NEW_MESSAGE_BODY, body: body})
+export const sendMessageAC = (text: string): ActionsType<SendMessageAT> => ({type: SEND_MESSAGE, payload: {text}})
 
 
 export default dialogsReducer

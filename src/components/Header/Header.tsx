@@ -5,6 +5,7 @@ import {NavLink} from "react-router-dom";
 type HeaderPropsType = {
     isAuth: boolean
     login: string
+    logOut: () => void
 
 
 }
@@ -17,7 +18,7 @@ const Header = (props: HeaderPropsType) => {
             <div className={s.loginBlock}>
 
                 {props.isAuth
-                    ? props.login
+                    ? <button onClick={props.logOut}>Log Out</button>
                     : <NavLink to={'./login'}>Login</NavLink>}
 
             </div>

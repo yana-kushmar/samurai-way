@@ -2,64 +2,42 @@ import React, {useEffect} from 'react';
 import ProfileInfo from "../ProfileInfo/ProfileInfo";
 import MyPostsContainer from "../MyPosts/MyPostsContainer";
 
-import {connect, useDispatch, useSelector} from "react-redux";
-import {getUserProfile, setUserProfile} from "../../../Redux/ProfileReducer";
-import {Redirect, withRouter} from "react-router-dom";
-import {withAuthRedirect} from "../../../hoc/WithAuthRedirect";
-import {compose} from "redux";
-import Dialogs from "../../Dialogs/Dialogs";
 
-
-
-
-
+import {getUserProfileTC} from "../../../Redux/ProfileReducer";
+import {useParams} from "react-router-dom";
+import {useAppDispatch, useAppSelector} from "../../../Redux/redux-store";
+import {useIsLoggedIn} from "../../../hooks/useIsLoggedIn";
 
 
 const ProfileContainer = (props: any) => {
-    const dispatch = useDispatch()
-    const profile = useSelector<any, any>(store => store.profilePage.profile)
-    // const isAuth = useSelector<any, any>(store => store.auth.isAuth)
+    useIsLoggedIn()
+    const dispatch = useAppDispatch()
+    const profile = useAppSelector(store => store.profilePage.profile)
+    const myId = useAppSelector(store => store.auth)
+    const params = useParams()
 
-    let userId = props.match.params.userId
-    if (!userId) {
-        userId = 1
-    }
+    let userId = params.userId
+
     useEffect(() => {
-       getUserProfile(userId)
-    }, [])
+        if (!userId && myId.id) {
+            userId = myId.id.toString()
+        }
+
+        if (userId) {
+            dispatch(getUserProfileTC(+userId))
+        }
+    }, [myId, userId])
 
 
     return (
-
         <div>
             <ProfileInfo {...props} profile={profile}/>
             <MyPostsContainer/>
-
         </div>
     );
 };
 
+export default ProfileContainer
 
 
-// export default
-compose(
-    //connect(mapStateToProps, mapDispatchToProps)
-    withRouter,
-    withAuthRedirect
-)(ProfileContainer)
 
-export  default ProfileContainer //change
-
-// let AuthRedirectComponent = withAuthRedirect(ProfileContainer)
-
-// let mapStateToPropsRedirect = (state) => {
-//  IsAuth : state.auth.isAuth
-//}
-
-// let mapStateToProps = (state) => {
-//  profile : state.profilePage.profile
-//}
-
-// const urlDataContainerComponent = withRouter(ProfileContainer)
-//
-// export default connect(mapStateToProps, {setUserProfile})(urlDataContainerComponent);

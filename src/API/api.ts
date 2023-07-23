@@ -1,6 +1,16 @@
-import axios from "axios";
-import {setAuthUserData} from "../Redux/authReducer";
+import axios, { AxiosResponse } from "axios";
+import {LoginType} from "../components/Login/Login/Login";
 
+export type ResponseType<D = {}> = {
+    resultCode: number
+    messages: string[]
+    data: D
+}
+type UserType = {
+    id: number,
+    email: string,
+    login: string
+}
 
 export const instance = axios.create({
     withCredentials: true,
@@ -14,13 +24,6 @@ export const UsersAPI = {
     getUsers(currentPage: number, pageSize: number) {
         return instance.get(`users?page=${currentPage}&count=${pageSize}`)
             .then(res => res.data)
-
-
-    },
-    getAuth() {
-        return instance.get(`auth/me`)
-            .then(res => res.data)
-
     },
 
     follow(userId: number) {
@@ -29,15 +32,33 @@ export const UsersAPI = {
     unfollow(userId: number) {
         return  instance.delete(`follow/${userId}`)
     },
-    getUserProfile(userId: number) {
-       return instance.get('profile/' + userId)
-    }
-
 
 }
 
+export const profileAPI = {
+    getUserProfile(userId: number) {
+        return instance.get('profile/' + userId)
+    },
+    getStatus(userId: number) {
+        return instance.get('profile/status/' + userId)
+    },
+    updateStatus(status: string) {
+        return instance.put('profile/status/', {status})
+    }
+}
 
-// export const getUsers2 = (currentPage: number, pageSize: number) => {
-//     return  instance.get( `follow?page=${currentPage}&count=${pageSize}`)
-//         .then(res => res.data)
-// }
+export const authAPI = {
+    me() {
+        return instance.get(`auth/me`)
+            .then(res => res.data)
+    },
+    login(data: LoginType){
+        return instance.post<ResponseType<{userId: number}>, AxiosResponse<ResponseType<{userId: number}>>,LoginType>('/auth/login', data);
+
+    },
+    logOut(){
+        return instance.delete<ResponseType<UserType>>('/auth/login');
+    }
+}
+
+

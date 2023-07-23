@@ -1,10 +1,7 @@
 import React, {useEffect} from "react";
-import { useSelector} from "react-redux";
 import Header from "../Header";
-
-import {getAuthUserData, setAuthUserData} from "../../../Redux/authReducer";
-
-
+import {getAuthUserDataTC, logOutTC} from "../../../Redux/authReducer";
+import {useAppDispatch, useAppSelector} from "../../../Redux/redux-store";
 
 type AuthType = {
     id: number
@@ -15,15 +12,18 @@ type AuthType = {
 
 const HeaderContainer = () => {
 
-    // const dispatch = useDispatch()
-    const {login, id, email,  isAuth} = useSelector<any, AuthType>(state  => state.auth)
+    const dispatch = useAppDispatch()
+    const {login, isAuth} = useAppSelector(state  => state.auth)
 
-        useEffect(() => {
-            getAuthUserData(id, email, login)
-        }, [])
+   const logOut = () => {
+        dispatch(logOutTC())
+    }
+
+
     return <Header
         login={login}
         isAuth={isAuth}
+        logOut={logOut}
     />
 }
 
