@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 
 import {addPostActionCreator} from "../../../Redux/ProfileReducer";
 import MyPosts from "./MyPosts";
@@ -10,9 +10,16 @@ const MyPostsContainer = () => {
     const dispatch = useAppDispatch()
     const {posts} = useAppSelector( state => state.profilePage)
 
+
+    const sortedPost = useMemo(() => {
+        return posts.sort((a, b) => {
+            return b.id - a.id
+        })
+    }, [posts])
+
     return (
         <MyPosts
-            posts={posts}
+            posts={sortedPost}
             addPost={(text: string) => dispatch(addPostActionCreator(text))}
 
         />

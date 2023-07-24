@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import s from './MyPosts.module.css'
 import Post from "./Post/Post";
 import {ErrorMessage, Field, Form, Formik} from "formik";
@@ -15,9 +15,9 @@ type MyPostPropsType = {
 }
 
 
-const MyPosts = (props: MyPostPropsType) => {
+const MyPosts =  memo(function (props: MyPostPropsType)  {
 
-    let postsElements = props.posts.map((p) =>
+    const postsElements = props.posts.map((p) =>
         <Post message={p.message} likesCount={p.likesCount}/>)
 
     return (
@@ -41,7 +41,6 @@ const MyPosts = (props: MyPostPropsType) => {
 
                     }}>
                     {({isSubmitting, errors}) => {
-                        console.log(errors)
                         return (
                             <Form>
                                 <Field type="newPostText" name="newPostText" className={errors.newPostText && s.error}/>
@@ -61,6 +60,6 @@ const MyPosts = (props: MyPostPropsType) => {
             </div>
         </div>
     )
-}
+})
 
 export default MyPosts

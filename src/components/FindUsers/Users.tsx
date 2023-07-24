@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import s from "./Users.module.css";
 import userPhoto from "../../Assets/images/photo.png";
 import { UserType} from "../../Redux/usersReducer";
@@ -22,7 +22,7 @@ type UsersContainerPropsType = {
 
 }
 
-const Users = (props: UsersContainerPropsType) => {
+const Users = memo(function (props: UsersContainerPropsType){
 
     let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize)
 
@@ -81,6 +81,6 @@ const Users = (props: UsersContainerPropsType) => {
         </div>
 
     );
-};
+})
 
 export default Users;

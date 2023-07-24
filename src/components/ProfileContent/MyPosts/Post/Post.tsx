@@ -1,11 +1,8 @@
-import React from "react";
+import React, {memo} from "react";
 import s from './Post.module.css'
 
 
-
-
-
-const Post = (props: any) => {
+const Post = memo(function (props: any){
     return (
         <div className={s.item}>
             <img
@@ -18,6 +15,6 @@ const Post = (props: any) => {
         </div>
 
     )
-}
+})
 
 export default Post

@@ -1,11 +1,11 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
+import React, {ChangeEvent, memo, useEffect, useState} from 'react';
 
 import {setUserStatusTC, updateUserStatusTC} from "../../../../Redux/ProfileReducer";
 import {useAppDispatch, useAppSelector} from '../../../../Redux/redux-store';
 
 
 
-const ProfileStatus = () => {
+const ProfileStatus = memo(function () {
 
     const dispatch = useAppDispatch()
     const  userId  = useAppSelector(store => store.profilePage.profile?.userId)
@@ -51,7 +51,7 @@ const ProfileStatus = () => {
             </div>
         </>
     );
-};
+})
 
 
 export default ProfileStatus;
