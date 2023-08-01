@@ -4,11 +4,11 @@ import {ActionsType} from "./types";
 import {ThunkAction} from "redux-thunk";
 import {AppRootStateType} from "./redux-store";
 
-const ADD_POST = "ADD-POST"
+const ADD_POST = "/profile/ADD-POST"
 
-const SET_USERS_PROFILE = "SET_USERS_PROFILE"
-const SET_USERS_STATUS = "SET_USERS_STATUS"
-const DELETE_POST = "DELETE_POST"
+const SET_USERS_PROFILE = "/profile/SET_USERS_PROFILE"
+const SET_USERS_STATUS = "/profile/SET_USERS_STATUS"
+const DELETE_POST = "/profile/DELETE_POST"
 
 type UsersProfileType = {
     userId: number
@@ -34,7 +34,7 @@ type PostType = {
 }
 type ProfileReducerStateType = {
     posts: PostType[]
-    profile:  UsersProfileType | null,
+    profile: UsersProfileType | null,
     status: string
     userId: null | number
 }
@@ -83,7 +83,7 @@ const profileReducer = (state: ProfileReducerStateType = initialState, action: P
         case DELETE_POST:
             return {
                 ...state,
-                posts:  state.posts.filter(p => p.id !== action.payload.postId)
+                posts: state.posts.filter(p => p.id !== action.payload.postId)
             }
         case SET_USERS_PROFILE:
             return {
@@ -103,8 +103,8 @@ const profileReducer = (state: ProfileReducerStateType = initialState, action: P
 }
 
 
-export const addPostActionCreator = (text: string): ActionsType<AddPostAC>  => ({ type: ADD_POST ,payload: {text}})
-export const deletePostAC = (postId: number): ActionsType<deletePostAC>  => ({ type: DELETE_POST ,payload: {postId}})
+export const addPostActionCreator = (text: string): ActionsType<AddPostAC> => ({type: ADD_POST, payload: {text}})
+export const deletePostAC = (postId: number): ActionsType<deletePostAC> => ({type: DELETE_POST, payload: {postId}})
 
 export const setUserProfile = (profile: UsersProfileType): ActionsType<SetUserProfileAC> => ({
     type: SET_USERS_PROFILE,
@@ -118,30 +118,24 @@ export const setUserStatus = (status: string): ActionsType<SetUserStatusAC> => (
 
 //thunk
 export const getUserProfileTC = (userId: number): ThunkAction<void, AppRootStateType, {}, ActionsType<SetUserProfileAC>> => {
-    return (dispatch): void => {
-        profileAPI.getUserProfile(userId)
-            .then(res => {
-                dispatch(setUserProfile(res.data))
-            })
+    return async (dispatch) => {
+        const res = await profileAPI.getUserProfile(userId)
+        dispatch(setUserProfile(res.data))
     }
 }
 
 export const setUserStatusTC = (userId: number): ThunkAction<void, AppRootStateType, {}, ActionsType<SetUserStatusAC>> => {
-    return (dispatch): void => {
-        profileAPI.getStatus(userId)
-            .then(res => {
+    return async (dispatch) => {
+       const res = await profileAPI.getStatus(userId)
                 dispatch(setUserStatus(res.data))
-            })
     }
 }
 export const updateUserStatusTC = (status: string): ThunkAction<void, AppRootStateType, {}, ActionsType<SetUserStatusAC>> => {
-    return (dispatch): void => {
-        profileAPI.updateStatus(status)
-            .then(res => {
+    return async (dispatch) => {
+       const res = await profileAPI.updateStatus(status)
                 if (res.data.resultCode === 0) {
                     dispatch(setUserStatus(status))
                 }
-            })
     }
 }
 

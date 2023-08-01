@@ -1,10 +1,7 @@
-import { Dispatch } from "redux";
-import {authAPI, UsersAPI} from "../API/api";
+import {authAPI} from "../API/api";
 
-const SET_USER_DATA = "SET_USER_DATA"
-const SET_LOGIN_USER = "SET_LOGIN_USER"
-
-
+const SET_USER_DATA = "/auth/SET_USER_DATA"
+const SET_LOGIN_USER = "/auth/SET_LOGIN_USER"
 
 
 type AuthStateType = {
@@ -13,21 +10,17 @@ type AuthStateType = {
     login: string
     isAuth: boolean
 }
-
 type DataType = {
     userId: number
     email: string
     login: string
 
 }
-
 type AuthAT = {
     isAuth: boolean
     type: string
     data: DataType
 }
-
-
 //типизация action если я не знаю какие ключи и какие у них значения
 //[x: string]: any
 let initialState = {
@@ -69,40 +62,34 @@ export const setIsLoggedInAC = (isAuth: boolean) => ({type: SET_LOGIN_USER, isAu
 
 
 //thunk
-export const getAuthUserDataTC = (): any => {
-    return (dispatch: any) => {
-        authAPI.me()
-            .then(data => {
+export const getAuthUserDataTC =  (): any => {
+    return async (dispatch: any) => {
+        const data = await authAPI.me()
                 if (data.resultCode === 0) {
                     dispatch(setAuthUserData(data.data.id, data.data.email, data.data.login))
                 }
-            })
     }
 }
 
 export const loginTC = (data: any): any => {
-    return (dispatch: any):any => {
-        authAPI.login(data)
-            .then(data => {
-                if (data.data.resultCode === 0) {
+    return async (dispatch: any) => {
+        const res = await authAPI.login(data)
+                if (res.data.resultCode === 0) {
                     dispatch(setIsLoggedInAC(true))
                 }else {
-                    console.log(data.data.messages)
-                    dispatch(data.data.messages[0])///// bcghfdbnm
+                    console.log(res.data.messages)
+                    dispatch(res.data.messages[0])
 
                 }
-            })
     }
 }
 
 export const logOutTC = () =>  {
-    return (dispatch: any) => {
-        authAPI.logOut()
-            .then(data => {
+    return async (dispatch: any) => {
+       const data =  await authAPI.logOut()
                 if (data.data.resultCode === 0) {
                     dispatch(setIsLoggedInAC(false))
                 }
-            })
     }
 }
 export default authReducer

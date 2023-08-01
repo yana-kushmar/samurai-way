@@ -1,6 +1,6 @@
 import {getAuthUserDataTC} from "./authReducer";
 
-const SET_INITIALIZED = "SET_INITIALIZED"
+const SET_INITIALIZED = "/app/SET_INITIALIZED"
 type setInitializedAC = {
     type: string
 }
@@ -9,7 +9,7 @@ type InitializedStateType = {
 }
 
 let initialState = {
-   initialized: false
+    initialized: false
 
 }
 
@@ -21,29 +21,24 @@ const appReducer = (state: InitializedStateType = initialState, action: setIniti
                 ...state,
                 initialized: true
             }
-
         default:
             return state
     }
-
 }
 
 //action
-export const setInitialized = () => ({type: SET_INITIALIZED,} as const )
-
-
+export const setInitialized = () => ({type: SET_INITIALIZED,} as const)
 
 //thunk
 export const initialisedAppTC = (): any => {
-    return (dispatch: any) => {
-        const promise = dispatch(getAuthUserDataTC())
+    return async (dispatch: any) => {
+        const promise = await dispatch(getAuthUserDataTC())
         Promise.all([promise])
-        .then(() => {
-            dispatch(setInitialized())
-        })
+            .then(() => {
+                dispatch(setInitialized())
+            })
     }
 }
-
 
 
 export default appReducer
