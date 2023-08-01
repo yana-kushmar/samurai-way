@@ -8,6 +8,7 @@ const ADD_POST = "ADD-POST"
 
 const SET_USERS_PROFILE = "SET_USERS_PROFILE"
 const SET_USERS_STATUS = "SET_USERS_STATUS"
+const DELETE_POST = "DELETE_POST"
 
 type UsersProfileType = {
     userId: number
@@ -42,6 +43,10 @@ type AddPostAC = {
     text: string
 }
 
+type deletePostAC = {
+    postId: number
+}
+
 type SetUserProfileAC = {
     profile: UsersProfileType
 }
@@ -59,7 +64,7 @@ const initialState: ProfileReducerStateType = {
     status: '',
     userId: null
 }
-type ProfileReducerAT = ActionsType<AddPostAC & SetUserProfileAC & SetUserStatusAC>
+type ProfileReducerAT = ActionsType<AddPostAC & SetUserProfileAC & SetUserStatusAC & deletePostAC>
 
 const profileReducer = (state: ProfileReducerStateType = initialState, action: ProfileReducerAT) => {
     switch (action.type) {
@@ -74,6 +79,11 @@ const profileReducer = (state: ProfileReducerStateType = initialState, action: P
                 ...state,
                 posts: [...state.posts, newPost],
                 newPostText: ""
+            }
+        case DELETE_POST:
+            return {
+                ...state,
+                posts:  state.posts.filter(p => p.id !== action.payload.postId)
             }
         case SET_USERS_PROFILE:
             return {
@@ -94,6 +104,7 @@ const profileReducer = (state: ProfileReducerStateType = initialState, action: P
 
 
 export const addPostActionCreator = (text: string): ActionsType<AddPostAC>  => ({ type: ADD_POST ,payload: {text}})
+export const deletePostAC = (postId: number): ActionsType<deletePostAC>  => ({ type: DELETE_POST ,payload: {postId}})
 
 export const setUserProfile = (profile: UsersProfileType): ActionsType<SetUserProfileAC> => ({
     type: SET_USERS_PROFILE,
