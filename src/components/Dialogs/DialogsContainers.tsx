@@ -15,11 +15,11 @@ const DialogsContainer = () => {
 
 
     return (
-        <Dialogs
-            dialogsPage={dialogsPage}
-            sendMessage={(text: string) => dispatch(sendMessageAC(text))}
-            isAuth={isAuth}
-        />
+            <Dialogs
+                dialogsPage={dialogsPage}
+                sendMessage={(text: string) => dispatch(sendMessageAC(text))}
+                isAuth={isAuth}
+            />
     )
 
 }

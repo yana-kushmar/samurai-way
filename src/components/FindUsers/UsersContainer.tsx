@@ -32,21 +32,13 @@ const UsersContainer = () => {
 
     useEffect(() => {
         dispatch(getUsersTC(currentPage, pageSize))
-    }, [currentPage, pageSize]) // передала как зависимость
+    }, [currentPage, pageSize])
 
 
     const onPageChanged = (pageNumber: number) => {
-        getUsersTC(pageNumber, pageSize)
+        dispatch(getUsersTC(pageNumber, pageSize))
 
         dispatch(setCurrentPage(pageNumber))
-        dispatch(setIsFetching(true))
-
-        UsersAPI.getUsers(currentPage, pageNumber)
-            .then(data => {
-                dispatch(setUsers(data.items))
-                dispatch(setIsFetching(false))
-            })
-
     }
 
     return <>
@@ -68,14 +60,10 @@ const UsersContainer = () => {
 
 }
 
-export default compose(
-    // withAuthRedirect
-    //connect
-)(UsersContainer)
+export default compose()(UsersContainer)
 
-//let withRedirect =withAuthRedirect(UsersContainer)
 
-/////setFollowingInProgress
+
 
 
 

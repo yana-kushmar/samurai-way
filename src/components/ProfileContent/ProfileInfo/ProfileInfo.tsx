@@ -4,9 +4,17 @@ import Preloader from "../../../Common/Preloader/Preloader";
 import ProfileStatus from "./ProfileStatus/ProfileStatus";
 import avatar from "../../../Assets/images/photo.png"
 
+export type ProfileInfo = {
+    profile: {
+        photos: {
+            large: string
+            small: string
+        }
+    }
+}
+const ProfileInfo = memo(function ({profile}: ProfileInfo) {
 
-const ProfileInfo = memo(function (props: any) {
-    if (!props.profile) {
+    if (!profile) {
         return <Preloader/>
     }
 
@@ -16,7 +24,7 @@ const ProfileInfo = memo(function (props: any) {
            {/*    <img src="" alt=""задний фон картирки />*/}
            {/*</div>*/}
             <div className={s.descriptionBlock}>
-                <img src={props.profile.photos.small || avatar} style={{width: '130px'}}/>
+                <img src={profile.photos.small || avatar} style={{width: '130px'}}/>
             </div>
             <div>
                 <ProfileStatus />
