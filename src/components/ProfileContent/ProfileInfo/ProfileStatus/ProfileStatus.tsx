@@ -10,6 +10,7 @@ const ProfileStatus = memo(function () {
     const dispatch = useAppDispatch()
     const  userId  = useAppSelector(store => store.profilePage.profile?.userId)
     const status = useAppSelector(store => store.profilePage.status)
+    const currentUser = useAppSelector(store => store.auth)
 
 
     const [isEditMode, setIsEditMode] = useState(false)
@@ -21,7 +22,10 @@ const ProfileStatus = memo(function () {
     }, [userId])
 
     const onDoubleClickStatus = () => {
-        setIsEditMode(true)
+        if (userId === currentUser.id){
+            setIsEditMode(true)
+        }
+
     }
 
     const changeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {

@@ -8,7 +8,8 @@ const state = {
     ],
     profile: null,
     status: '',
-    userId: null
+    userId: null,
+    newPostText: ""
 }
 
 it('new post should be added', () => {

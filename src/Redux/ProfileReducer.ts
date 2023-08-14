@@ -9,6 +9,7 @@ const ADD_POST = "/profile/ADD-POST"
 const SET_USERS_PROFILE = "/profile/SET_USERS_PROFILE"
 const SET_USERS_STATUS = "/profile/SET_USERS_STATUS"
 const DELETE_POST = "/profile/DELETE_POST"
+const SAVE_PHOTO_SUCCESS = "/profile/SAVE_PHOTO_SUCCESS"
 
 type UsersProfileType = {
     userId: number
@@ -16,6 +17,7 @@ type UsersProfileType = {
     lookingForAJobDescription: string
     fullName: string
     contacts: ContactsType
+    photos: any
 }
 type ContactsType = {
     github: string
@@ -36,7 +38,8 @@ type ProfileReducerStateType = {
     posts: PostType[]
     profile: UsersProfileType | null,
     status: string
-    userId: null | number
+    userId?: number | null
+    newPostText: string
 }
 
 type AddPostAC = {
@@ -54,6 +57,10 @@ type SetUserStatusAC = {
     status: string
 }
 
+type SavePhotoSuccessAC = {
+    photos: any
+}
+
 const initialState: ProfileReducerStateType = {
     posts: [
         {id: 1, message: 'Hi, how are u?', likesCount: 15},
@@ -62,11 +69,12 @@ const initialState: ProfileReducerStateType = {
     ],
     profile: null,
     status: '',
-    userId: null
+    userId: null,
+    newPostText: ""
 }
-type ProfileReducerAT = ActionsType<AddPostAC & SetUserProfileAC & SetUserStatusAC & deletePostAC>
+type ProfileReducerAT = ActionsType<AddPostAC & SetUserProfileAC & SetUserStatusAC & deletePostAC & SavePhotoSuccessAC>
 
-const profileReducer = (state: ProfileReducerStateType = initialState, action: ProfileReducerAT) => {
+const profileReducer = (state: ProfileReducerStateType = initialState, action: ProfileReducerAT): ProfileReducerStateType => {
     switch (action.type) {
         case ADD_POST:
             let newPost = {
@@ -95,6 +103,11 @@ const profileReducer = (state: ProfileReducerStateType = initialState, action: P
                 ...state,
                 status: action.payload.status
             }
+        case SAVE_PHOTO_SUCCESS:
+            return {
+                ...state,
+                profile: {...state.profile as UsersProfileType, photos: action.payload.photos}
+            }
 
 
         default:
@@ -113,6 +126,10 @@ export const setUserProfile = (profile: UsersProfileType): ActionsType<SetUserPr
 export const setUserStatus = (status: string): ActionsType<SetUserStatusAC> => ({
     type: SET_USERS_STATUS,
     payload: {status}
+})
+export const savePhotoSuccess = (photos:  any): ActionsType<SavePhotoSuccessAC> => ({
+    type: SAVE_PHOTO_SUCCESS,
+    payload: {photos}
 })
 
 
@@ -136,6 +153,15 @@ export const updateUserStatusTC = (status: string): ThunkAction<void, AppRootSta
                 if (res.data.resultCode === 0) {
                     dispatch(setUserStatus(status))
                 }
+    }
+}
+
+export const savePhotoTC = (file: any ): ThunkAction<void, AppRootStateType, {}, ActionsType<any>> => {
+    return async (dispatch) => {
+        const res = await profileAPI.savePhoto(file)
+        if (res.data.resultCode === 0) {
+            dispatch(savePhotoSuccess(res.data.photos))
+        }
     }
 }
 

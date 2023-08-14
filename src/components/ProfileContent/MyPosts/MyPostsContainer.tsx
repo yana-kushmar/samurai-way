@@ -8,8 +8,8 @@ import {useAppDispatch, useAppSelector} from "../../../Redux/redux-store";
 
 const MyPostsContainer = () => {
     const dispatch = useAppDispatch()
-    const {posts} = useAppSelector( state => state.profilePage)
-
+    const profileState = useAppSelector( state => state.profilePage)
+    const {posts} = profileState
 
     const sortedPost = useMemo(() => {
         return posts.sort((a, b) => {
