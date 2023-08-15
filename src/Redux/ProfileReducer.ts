@@ -3,6 +3,7 @@ import {ActionsType} from "./types";
 
 import {ThunkAction} from "redux-thunk";
 import {AppRootStateType} from "./redux-store";
+import {loginTC} from "./authReducer";
 
 const ADD_POST = "/profile/ADD-POST"
 
@@ -156,11 +157,11 @@ export const updateUserStatusTC = (status: string): ThunkAction<void, AppRootSta
     }
 }
 
-export const savePhotoTC = (file: any ): ThunkAction<void, AppRootStateType, {}, ActionsType<any>> => {
-    return async (dispatch) => {
+export const savePhotoTC = (file: any ): any => {
+    return async (dispatch: any) => {
         const res = await profileAPI.savePhoto(file)
         if (res.data.resultCode === 0) {
-            dispatch(savePhotoSuccess(res.data.photos))
+            dispatch(savePhotoSuccess(res.data.data.photos))
         }
     }
 }
