@@ -1,7 +1,9 @@
 import React from 'react';
+import {useAppSelector} from "../../../Redux/redux-store";
 
 export type ProfileDescriptionType = {
     profile: {
+        userId: number,
         fullName: string,
         aboutMe: string,
         lookingForAJob: boolean,
@@ -18,6 +20,7 @@ export type ProfileDescriptionType = {
         },
 
     }
+    goToEditMode: () => void
 }
 type Key = keyof ProfileDescriptionType['profile']['contacts']
 type ContactsType = {
@@ -25,25 +28,31 @@ type ContactsType = {
     contactValue: string
 }
 
-const ProfileDescription = ({profile}: ProfileDescriptionType) => {
+const ProfileDescription = (props: ProfileDescriptionType) => {
+    const currentUser = useAppSelector(store => store.auth)
+
     return (
         <div>
-            <div>
-                <b>Full name</b> : {profile.fullName}
-            </div>
-            <div>
-                <b>Looking for a job</b> : {profile.lookingForAJob ? "yes" : "no"}
-            </div>
-            {profile.lookingForAJob &&
+            {currentUser.id === props.profile.userId &&
                 <div>
-                    <b>My professional skills</b> : {profile.lookingForAJobDescription}
+                    <button onClick={props.goToEditMode}>edit</button>
                 </div>}
             <div>
-                <b>About me</b>: {profile.aboutMe}
+                <b>Full name</b> : {props.profile.fullName}
             </div>
             <div>
-                <b>Contacts</b>: {Object.keys(profile.contacts).map((key) =>{
-                return <Contacts contactTitle={key} contactValue={profile.contacts[key as Key]}/>
+                <b>Looking for a job</b> : {props.profile.lookingForAJob ? "yes" : "no"}
+            </div>
+            {props.profile.lookingForAJob &&
+                <div>
+                    <b>My professional skills</b> : {props.profile.lookingForAJobDescription}
+                </div>}
+            <div>
+                <b>About me</b>: {props.profile.aboutMe}
+            </div>
+            <div>
+                <b>Contacts</b>: {Object.keys(props.profile.contacts).map((key) => {
+                return <Contacts contactTitle={key} contactValue={props.profile.contacts[key as Key]}/>
             })}
             </div>
         </div>
@@ -52,10 +61,8 @@ const ProfileDescription = ({profile}: ProfileDescriptionType) => {
 };
 
 
-
-
 export const Contacts = (props: ContactsType) => {
-    return(
+    return (
         <div>
             <b> {props.contactTitle}</b>: {props.contactValue}
         </div>

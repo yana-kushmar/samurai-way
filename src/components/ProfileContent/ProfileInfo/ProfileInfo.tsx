@@ -5,7 +5,8 @@ import ProfileStatus from "./ProfileStatus/ProfileStatus";
 import avatar from "../../../Assets/images/photo.png"
 import {useAppDispatch, useAppSelector} from "../../../Redux/redux-store";
 import {savePhotoTC} from "../../../Redux/ProfileReducer";
-import ProfileDescription from "./ProfileDescription";
+import ProfileDescription, {Contacts, ProfileDescriptionType} from "./ProfileDescription";
+import ProfileDescriptionForm from "./ProfileDescriptionForm/ProfileDescriptionForm";
 
 
 export type ProfileInfo = {
@@ -64,7 +65,9 @@ const ProfileInfo = memo(function ({profile}: ProfileInfo) {
                 <div>
                     <ProfileStatus/>
                 </div>
-                {editMode ? <ProfileDescriptionForm/> : <ProfileDescription profile={profile}/>}
+                {editMode
+                    ? <ProfileDescriptionForm profile={profile}/>
+                    : <ProfileDescription profile={profile} goToEditMode={() => {setEditMode(true)}}/>}
 
             </div>
 
@@ -73,11 +76,8 @@ const ProfileInfo = memo(function ({profile}: ProfileInfo) {
     )
 })
 
-const ProfileDescriptionForm = () => {
-    return (
-        <div></div>
-    )
-}
+
+
 
 
 export default ProfileInfo
