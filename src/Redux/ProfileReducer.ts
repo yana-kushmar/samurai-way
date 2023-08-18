@@ -165,6 +165,14 @@ export const savePhotoTC = (file: any ): any => {
         }
     }
 }
+export const saveProfileTC = (profile: any ): any => {
+    return async (dispatch: any) => {
+        const res = await profileAPI.saveProfile(profile)
+        if (res.data.resultCode === 0) {
+            // dispatch(savePhotoSuccess(res.data.data.photos))
+        }
+    }
+}
 
 
 export default profileReducer

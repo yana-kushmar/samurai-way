@@ -5,6 +5,8 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
+import {useAppDispatch} from "../../../../Redux/redux-store";
+import {saveProfileTC} from "../../../../Redux/ProfileReducer";
 
 type FormikErrorType = {
     email?: string;
@@ -28,28 +30,38 @@ export type ProfileDescriptionFormType = {
             youtube: string,
         },
 
-    }
+    },
+    exitEditMode: () => void
 
 }
-const ProfileDescriptionForm = ({profile}: ProfileDescriptionFormType) => {
+
+const ProfileDescriptionForm = ({profile, exitEditMode}: ProfileDescriptionFormType) => {
+    const dispatch = useAppDispatch()
+
     const formik = useFormik({
         initialValues: {
             ...profile
         },
         onSubmit: (values) => {
-            formik.resetForm()
-
+            dispatch(saveProfileTC(values))
+            exitEditMode()
         },
     })
     return (
-        <FormGroup>
+        <form onSubmit={formik.handleSubmit}>
+            <FormGroup>
             <TextField label='fullName' margin="normal" {...formik.getFieldProps("fullName")} />
             {formik.touched.fullName && formik.errors.fullName &&
                 <div style={{color: "red"}}>{formik.errors.fullName}</div>}
 
-            <TextField label='lookingForAJob' margin="normal" {...formik.getFieldProps("lookingForAJob")} />
+            <FormControlLabel control={<Checkbox />} label="lookingForAJob" {...formik.getFieldProps("lookingForAJob")} />
             {formik.touched.lookingForAJob && formik.errors.lookingForAJob && (
                 <div style={{color: "red"}}>{formik.errors.lookingForAJob}</div>
+            )}
+
+            <TextField label='lookingForAJobDescription' margin="normal" {...formik.getFieldProps("lookingForAJobDescription")} />
+            {formik.touched.lookingForAJobDescription && formik.errors.lookingForAJobDescription && (
+                <div style={{color: "red"}}>{formik.errors.lookingForAJobDescription}</div>
             )}
 
             <TextField label='aboutMe' margin="normal" {...formik.getFieldProps("aboutMe")} />
@@ -93,14 +105,12 @@ const ProfileDescriptionForm = ({profile}: ProfileDescriptionFormType) => {
             )}
 
 
-            {/*<FormControlLabel*/}
-            {/*    label={"Remember me"}*/}
-            {/*    control={<Checkbox checked={formik.values.rememberMe} {...formik.getFieldProps("rememberMe")} />}*/}
-            {/*/>*/}
+
             <Button type={"submit"} variant={"contained"} color={"primary"}>
                 Save
             </Button>
-        </FormGroup>
+            </FormGroup>
+        </form>
     )
 
 };

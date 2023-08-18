@@ -66,7 +66,7 @@ const ProfileInfo = memo(function ({profile}: ProfileInfo) {
                     <ProfileStatus/>
                 </div>
                 {editMode
-                    ? <ProfileDescriptionForm profile={profile}/>
+                    ? <ProfileDescriptionForm profile={profile} exitEditMode={() => {setEditMode(false)}}/>
                     : <ProfileDescription profile={profile} goToEditMode={() => {setEditMode(true)}}/>}
 
             </div>
